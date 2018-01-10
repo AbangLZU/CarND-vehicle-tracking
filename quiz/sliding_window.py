@@ -22,7 +22,7 @@ def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
 # start and stop positions in both x and y,
 # window size (x and y dimensions),
 # and overlap fraction (for both x and y)
-def slide_window(img, x_start_stop=(None, None), y_start_stop=(None, None),
+def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
                  xy_window=(64, 64), xy_overlap=(0.5, 0.5)):
     # If x and/or y start/stop positions not defined, set to image size
     if x_start_stop[0] == None:
@@ -42,20 +42,30 @@ def slide_window(img, x_start_stop=(None, None), y_start_stop=(None, None),
     nx_per_step = np.int(xy_window[0] * (1.0 - xy_overlap[0]))
     ny_per_step = np.int(xy_window[1] * (1.0 - xy_overlap[1]))
     # Compute the number of windows in x/y
-    nb_windows = img.shape[0] - xy_window[0]
+    x_buffer = np.int(xy_window[0] * xy_overlap[0])
+    y_buffer = np.int(xy_window[1] * xy_overlap[1])
+    nx_windows = np.int((xspan - x_buffer)/nx_per_step)
+    ny_windows = np.int((yspan - y_buffer)/ny_per_step)
     # Initialize a list to append window positions to
     window_list = []
     # Loop through finding x and y window positions
     #     Note: you could vectorize this step, but in practice
     #     you'll be considering windows one by one with your
     #     classifier, so looping makes sense
-    # Calculate each window position
-    # Append window position to list
+    for ys in range(ny_windows):
+        for xs in range(nx_windows):
+            # Calculate window position
+            startx = xs * nx_per_step + x_start_stop[0]
+            endx = startx + xy_window[0]
+            starty = ys * ny_per_step + y_start_stop[0]
+            endy = starty + xy_window[1]
+            # Append window position to list
+            window_list.append(((startx, starty), (endx, endy)))
     # Return the list of windows
     return window_list
 
 
-windows = slide_window(image, x_start_stop=(None, None), y_start_stop=(None, None),
+windows = slide_window(image, x_start_stop=[None, None], y_start_stop=[None, None],
                        xy_window=(128, 128), xy_overlap=(0.5, 0.5))
 
 window_img = draw_boxes(image, windows, color=(0, 0, 255), thick=6)
