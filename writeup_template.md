@@ -38,6 +38,33 @@ You're reading it!
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
+        color_space = 'HLS'  # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+        orient = 9  # HOG orientations
+        pix_per_cell = 8  # HOG pixels per cell
+        cell_per_block = 2  # HOG cells per block
+        hog_channel = "ALL"  # Can be 0, 1, 2, or "ALL"
+        spatial_size = (16, 16)  # Spatial binning dimensions
+        hist_bins = 128  # Number of histogram bins
+        spatial_feat = True  # Spatial features on or off
+        hist_feat = True  # Histogram features on or off
+        hog_feat = True  # HOG features on or off
+        y_start_stop = [510, 720]  # Min and max in y to search in slide_window()
+
+5.4 Seconds to train SVC...
+Test Accuracy of SVC =  0.9893
+
+        spatial_size = (16, 16)  # Spatial binning dimensions
+        hist_bins = 64  # Number of histogram bins
+the shape of the X_train are (14208, 6252)
+number of test samples is 3552 1735.0 car samples and  1817.0 noncar samples
+17.46 Seconds to train SVC...
+Test Accuracy of SVC =  0.9893
+
+the shape of the X_train are (14208, 6252)
+number of test samples is 3552 1774.0 car samples and  1778.0 noncar samples
+3.04 Seconds to train SVC...
+Test Accuracy of SVC =  0.9904
+
 The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
