@@ -4,6 +4,21 @@ import cv2
 from skimage.feature import hog
 
 
+def convert_color(img, conv='BGR2YCrCb'):
+    if conv == 'BGR2YCrCb':
+        return cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    if conv == 'BGR2YCrCb':
+        return cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    if conv == 'BGR2LUV':
+        return cv2.cvtColor(img, cv2.COLOR_BGR2LUV)
+    if conv == 'BGR2HLS':
+        return cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
+    if conv == 'BGR2YUV':
+        return cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+    if conv == 'RGB2YUV':
+        return cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+
+
 # Define a function to return HOG features and visualization
 def get_hog_features(img, orient, pix_per_cell, cell_per_block,
                      vis=False, feature_vec=True):
@@ -58,21 +73,24 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
     for file in imgs:
         file_features = []
         # Read in each one by one
-        image = mpimg.imread(file)
-        # apply color conversion if other than 'RGB'
-        if color_space != 'RGB':
+        image = cv2.imread(file)
+        # apply color conversion if other than 'BGR'
+        if color_space != 'BGR':
             if color_space == 'HSV':
-                feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+                feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
             elif color_space == 'LUV':
-                feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2LUV)
+                feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2LUV)
             elif color_space == 'HLS':
-                feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
+                feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2HLS)
             elif color_space == 'YUV':
-                feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
+                feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
             elif color_space == 'YCrCb':
-                feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
+                feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
         else:
             feature_image = np.copy(image)
+
+        # rescale the image to (0, 1)
+        feature_image = feature_image.astype(np.float32) / 255.
 
         if spatial_feat == True:
             spatial_features = bin_spatial(feature_image, size=spatial_size)
